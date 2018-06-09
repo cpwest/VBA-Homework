@@ -1,0 +1,119 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Sub Stock_Data_Totals():\
+\
+'Loop through all sheets in workbook\
+Dim ws As Worksheet\
+\
+For Each ws In Worksheets\
+\
+'Define variable types\
+\
+Dim Ticker As String\
+\
+Dim Volume_Total As Double\
+\
+Dim Volume As Double\
+\
+Dim Summary_Table_Row As Long\
+\
+Dim Open_Total As Double\
+Dim Close_Total As Double\
+Dim Yearly_Change As Double\
+Dim Percent_Change As Double\
+\
+\
+'set starting values for Volume_Total and rows in the summary table\
+\
+Volume_Total = 0\
+Summary_Table_Row = 2\
+Open_Total = 0\
+Close_Total = 0\
+\
+'define Last_Row so it knows when to end\
+Last_Row = Cells(Rows.Count, 1).End(xlUp).Row\
+\
+\
+'open for loop to run through every row, define iterator\
+\
+    For i = 2 To Last_Row\
+    \
+    'create conditional, if the cell's value is not equal to the value in the following cells\
+    \
+        If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then\
+        \
+            'assign cell value to ticker\
+            Ticker = Cells(i, 1).Value\
+            \
+            'place ticker in summary table\
+            Range("I" & Summary_Table_Row).Value = Ticker\
+            \
+            'calculate total volume\
+            'assign ticker's volume to Volume variable\
+            Volume = Cells(i, 7).Value\
+            \
+            'add the ticker's volume to the volume total\
+            Volume_Total = Volume_Total + Volume\
+            \
+            'place the new volume total in the summary table\
+            Range("J" & Summary_Table_Row).Value = Volume_Total\
+           \
+           'calculate yearly price change from open to close\
+           'add to Open and Close Totals\
+           Open_Total = Open_Total + Cells(i, 3).Value\
+           Close_Total = Close_Total + Cells(i, 6).Value\
+           \
+           'caluculate difference\
+           Yearly_Change = Close_Total - Open_Total\
+           \
+           'add to summary table\
+           Range("K" & Summary_Table_Row).Value = Yearly_Change\
+                \
+                'conditional to change cell color\
+                If Yearly_Change < 0 Then\
+                    Range("K" & Summary_Table_Row).Interior.ColorIndex = 3\
+                Else\
+                    Range("K" & Summary_Table_Row).Interior.ColorIndex = 4\
+                End If\
+           \
+           'calculate percent change\
+           Percent_Change = (Yearly_Change / Open_Total) * 100\
+\
+            'add to summary table\
+           Range("L" & Summary_Table_Row).Value = Percent_Change\
+           \
+           'add to summary table row so the next loop will in put data in the following row\
+           Summary_Table_Row = Summary_Table_Row + 1\
+           \
+            'reset volume total for next loop\
+            Volume_Total = 0\
+            \
+        'open else, if above conditions are not met this will be executed\
+        Else\
+\
+            'assign ticker's volume to Volume variable\
+            Volume = Cells(i, 7).Value\
+            \
+            'add the ticker's volume to the volume total\
+            Volume_Total = Volume_Total + Volume\
+            \
+            'add to Open and Close Totals\
+           Open_Total = Open_Total + Cells(i, 3).Value\
+           Close_Total = Close_Total + Cells(i, 6).Value\
+            \
+        'close conditional\
+        End If\
+    \
+    'move to next\
+    Next i\
+    \
+Next\
+\
+End Sub\
+\
+}
